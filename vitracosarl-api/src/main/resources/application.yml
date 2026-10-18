@@ -1,0 +1,70 @@
+spring:
+  application:
+    name: vitracosarl-api
+  profiles:
+    # Le profil « local » charge config/application-local.properties (ignoré par git) :
+    # c'est là que vivent les secrets de développement (SMTP). Les tests ne l'activent pas.
+    default: local
+  mail:
+    host: ${MAIL_HOST:}
+    port: ${MAIL_PORT:465}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail.smtp.auth: true
+      # Port 465 : connexion chiffrée d'emblée (SMTPS). Mettre false et utiliser le 587 pour STARTTLS.
+      mail.smtp.ssl.enable: ${MAIL_SSL:true}
+      mail.smtp.connectiontimeout: 5000
+      mail.smtp.timeout: 10000
+      mail.smtp.writetimeout: 10000
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5442/vitraco}
+    username: ${DB_USERNAME:vitraco}
+    password: ${DB_PASSWORD:vitraco}
+  servlet:
+    multipart:
+      # Colisage et imports de données : quelques milliers de lignes au plus.
+      max-file-size: 10MB
+      max-request-size: 10MB
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    locations: classpath:db/migration
+  jackson:
+    time-zone: Africa/Porto-Novo
+    property-naming-strategy: SNAKE_CASE
+  session:
+    jdbc:
+      initialize-schema: never
+    timeout: 30m
+
+server:
+  port: ${SERVER_PORT:8081}
+  servlet:
+    session:
+      cookie:
+        http-only: true
+        same-site: lax
+        name: VITRACO_SESSION
+  forward-headers-strategy: framework
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  health:
+    mail:
+      # Un SMTP en panne ne rend pas l'API indisponible : les envois sont asynchrones et n'échouent jamais une opération.
+      enabled: false
+
+vitraco:
+  mail:
+    from: ${MAIL_FROM_ADDRESS:}
+    from-name: ${MAIL_FROM_NAME:VITRACO Moto}

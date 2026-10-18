@@ -1,0 +1,10 @@
+# Modèle : copier en application-local.properties (ignoré par git) et renseigner les valeurs.
+spring.mail.host=smtp.exemple.com
+spring.mail.port=465
+spring.mail.username=compte@exemple.com
+spring.mail.password=
+vitraco.mail.from=compte@exemple.com
+vitraco.mail.from-name=VITRACO Moto
+
+# Clé AES-256 en Base64 (openssl rand -base64 32) : chiffre les secrets de double authentification.
+vitraco.securite.cle-a2f=…

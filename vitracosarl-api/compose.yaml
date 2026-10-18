@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: vitraco-postgres
+    environment:
+      POSTGRES_DB: vitraco
+      POSTGRES_USER: vitraco
+      POSTGRES_PASSWORD: vitraco
+      TZ: Africa/Porto-Novo
+    ports:
+      - "5442:5432"
+    volumes:
+      - vitraco-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vitraco -d vitraco"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  vitraco-pgdata:
